@@ -1,6 +1,6 @@
 // structure for a node of the RB-tree
 typedef struct structure{
-		unsigned long long int qgram; // number that represent the q-gram
+        unsigned long long int qgram; // number that represent the q-gram
         int size1; // number of this qgram in the first strings
         int size2; // number of this qgram in the second strings
         struct structure* sx;

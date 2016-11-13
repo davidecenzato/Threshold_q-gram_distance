@@ -1,10 +1,7 @@
 // program that calculate the threshold q-gram distance between two nucleotide strings
 
-// we save the profiles using hash table and trees
-
-
 //Alessio Milanese
-//16-12-2014
+//13 November 2016
 
 #include "Profile.cpp"
 
@@ -14,9 +11,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdint.h>
-
 #include <time.h>
-
 
 
 //----------TO SET:
@@ -93,14 +88,14 @@ int main(int argc, char **argv){
 	
 	
 	 //control the maximum number we could use for q
-    if (q > 32){
-    	printf("Error. You exceed the size of int to represent a q-gram (max q is 32).\n");
-        exit(1);
-    }
+	 if (q > 32){
+	   printf("Error. You exceed the size of int to represent a q-gram (max q is 32).\n");
+	   exit(1);
+	 }
 	
 	//create the inputs strings
 	char strfile1[30]; //file name 1
-    char strfile2[30]; //file name 2
+	char strfile2[30]; //file name 2
 	printf("Do you want to insert strings (1) or file (2)? ");
 	int ris=2;
 	scanf ("%d",&ris);
@@ -114,8 +109,8 @@ int main(int argc, char **argv){
 		scanf ("%s",str1);
 		printf ("Insert string 2: ");	
 		scanf ("%s",str2);
-    }else{  //insert strings from a fasta file
-    	printf ("Insert file 1: ");	
+	}else{  //insert strings from a fasta file
+		printf ("Insert file 1: ");	
 		scanf ("%s",strfile1);
 		printf ("Insert file 2: ");	
 		scanf ("%s",strfile2);
@@ -135,8 +130,8 @@ int main(int argc, char **argv){
     }
     
     //------------------------------------------------------------------------
-	//BEGINNING OF THE COMPUTATION
-	//------------------------------------------------------------------------
+    //BEGINNING OF THE COMPUTATION
+    //------------------------------------------------------------------------
     
    //inizializing the variables to calculate the time for the computation
    time_t m;

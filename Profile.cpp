@@ -60,7 +60,7 @@ void Profile::insert(unsigned long long int qgram_ins, int n_str){
         		if (x->size1 < threshold + 1){
         		 x->size1 = x->size1 + 1;
         		 }
-            }else{
+			}else{
         		if (x->size2 < threshold + 1){
         		 x->size2 = x->size2 + 1;
         		 }
@@ -86,10 +86,10 @@ void Profile::insert(unsigned long long int qgram_ins, int n_str){
 	if (n_str == 1){
         z->size1 = 1;
         z->size2 = 0;
-    }else{
+	}else{
         z->size1 = 0;
         z->size2 = 1;
-    }
+	}
 	z->sx = nil;
     z->dx = nil;
     
