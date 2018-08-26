@@ -1,0 +1,11 @@
+#!/bin/bash
+
+printf "Compiling the code..."
+g++ -o tqd-c tqd_n.cpp
+
+rc=$?;
+if [[ $rc == 0 ]];
+then printf "done\n";
+fi
+
+chmod +x tqd-c
