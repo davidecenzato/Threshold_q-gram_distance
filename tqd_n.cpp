@@ -84,7 +84,7 @@ int main(int argc, char **argv){
 	//----------------------------------------------------------------------------
 	// INIZIALIZING THE VARIABLES
 	//----------------------------------------------------------------------------
-  if (verbose > 3){fprintf( stderr,"Inizialise the variables \n");}
+  if (verbose > 3){fprintf( stderr,"Inizialise the variables.\n");}
 	char *str1;
 	char *str2;
 
@@ -119,8 +119,8 @@ int main(int argc, char **argv){
         fprintf( stderr,"Error. the second string is shorter then q.\n");
         exit(1);
   }
-  if (verbose > 3){fprintf( stderr,"First string:  %d\n",len1);}
-  if (verbose > 3){fprintf( stderr,"Second string: %d\n",len2);}
+  if (verbose > 3){fprintf( stderr,"  First string:  %d\n",len1);}
+  if (verbose > 3){fprintf( stderr,"  Second string: %d\n",len2);}
 
 
 	//convert the strings in arrays of numbers -----------------------------------
@@ -144,7 +144,7 @@ int main(int argc, char **argv){
 
 	//----------calculate the profile
 
-	if (verbose > 3){fprintf( stderr,"Calculate the profile\n");}
+	if (verbose > 3){fprintf( stderr,"Calculate the profile.\n");}
 
   unsigned long long int pos=0;
 	int qgram[q];
@@ -198,11 +198,11 @@ int main(int argc, char **argv){
 
 
 	//calculate the distance
-	if (verbose > 3){fprintf( stderr,"Calculate the distance\n");}
+	if (verbose > 3){fprintf( stderr,"Calculate the distance.\n");}
 	unsigned long long int dist = profile.calculateDistance();
 
 	//calculate the total pair-status
-	if (verbose > 3){fprintf( stderr,"Calcolate the pair statuses\n");}
+	if (verbose > 3){fprintf( stderr,"Calcolate the pair statuses.\n");}
 
 	int *status;
 	status=profile.get_total_status();
@@ -210,43 +210,32 @@ int main(int argc, char **argv){
 	//------------------------------------------------------------------------
 	//PRINT THE RESULTS
 	//------------------------------------------------------------------------
-	fprintf( stderr,"------------------------------------------\n");
-	fprintf( stderr,"RESULTS\n");
-	fprintf( stderr,"------------------------------------------\n");
+	if (verbose > 3){fprintf( stderr,"------------------------------------------\n");}
 
-	fprintf( stderr,"=== INPUT: ===============================\n");
+	if (verbose > 3){fprintf( stderr,"=== INPUT:\n");}
 
-	fprintf( stderr,"alphabet: a, t, c, g, A, T, C, G.\n");
-	cerr << "q: "<< q <<"\n";
+	if (verbose > 3){fprintf( stderr,"alphabet: a, t, c, g, A, T, C, G.\n");}
+	if (verbose > 3){cerr << "q: "<< q <<"\n";}
+  if (verbose > 3){cerr << "threshold: "<< threshold <<"\n";}
 	if(type_input==2){
-    fprintf( stderr,"first string: %s\n", input1);
-    fprintf( stderr,"second string: %s\n\n", input2);
+    if (verbose > 3){fprintf( stderr,"first file: %s\n", input1);}
+    if (verbose > 3){fprintf( stderr,"second file: %s\n", input2);}
 	}
 
+	if (verbose > 4){fprintf( stderr,"\n=== PROFILE:\n");}
 
-	fprintf( stderr,"\n=== TIME: ================================\n");
-
-	if(type_input==2){
-		fprintf( stderr,"time to load the fasta files (seconds): %ld\n",m1);
-	}
-//	m = difftime(time(NULL), now);
-  //  fprintf( stderr,"calculate time (seconds): %ld\n\n",m);
-
-
-	fprintf( stderr,"\n=== THRESHOLD Q-GRAM DISTANCE: ===========\n");
-
-	cerr << "number of nodes: " << profile.getNumber_of_nodes()<<"\n";
+	if (verbose > 4){cerr << "number of nodes: " << profile.getNumber_of_nodes()<<"\n";}
 	//fprintf( stderr,"percentage: %.2f\n\n",(float(dist)/n_nodes));
 
-	fprintf( stderr,"counting pair status in the profiles:\n");
+	if (verbose > 4){fprintf( stderr,"counting pair status in the profiles:\n");}
 	for (int i=0;i<3;i++){
 		for (int j=0;j<3;j++){
-			fprintf( stderr,"%d - %d: %d \n",i,j,status[i*(threshold+2) + j]);
+			if (verbose > 4){fprintf( stderr,"%d - %d: %d \n",i,j,status[i*(threshold+2) + j]);}
 		}
 	}
-	fprintf( stderr,"\n");
 
-	cout << "TQD: "<<dist<<"\n";
+  if (verbose > 3){fprintf( stderr,"\n=== THRESHOLD Q-GRAM DISTANCE:\n");}
+	cout <<dist<<"\n";
 
 }
 
