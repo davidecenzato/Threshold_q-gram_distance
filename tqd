@@ -91,9 +91,6 @@ def main(argv=None):
     if return_code:
         sys.exit(1)
 
-
-
-
     return 0        # success
 
 #-------------------------------- run main -------------------------------------
