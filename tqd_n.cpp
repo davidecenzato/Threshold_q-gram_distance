@@ -271,7 +271,7 @@ char* load_fasta(char file_name[]){
 		int cont=0;
 		c = fgetc (f);
 		while(c != EOF){
-      		if (c != '\n' && c!='N'){ //--------------------------------------------we take out the N's
+      		if (c != '\n'){
       			str[cont]=c;
       			cont++;
       		}
