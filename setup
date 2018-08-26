@@ -20,7 +20,7 @@ then
   LINE="export PATH=\"\$PATH:$DIR\""
   printf "adding %s to your \$PATH..." "$DIR"
 
-  printf '\n#threshold q-gram distance dir path\n%s\n' "$LINE" >> ~/.bashrc
+  printf '\n#threshold q-gram distance dir path\n%s\n' "$LINE" >> ~/.profile
   rc=$?;
   if [[ $rc == 0 ]];
   then printf "done\n";
