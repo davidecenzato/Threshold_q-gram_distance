@@ -29,5 +29,5 @@ tqd file1.fasta file2.fasta -q 6 -threshold 1
 
 If you want to directly input the string sequences:
 ```bash
-tqd ATGGATCAGTC CTGGATCAGAC -q 3 -threshold 1
+tqd ATGGATCAGTC CTGGATCAGAC -q 3 -threshold 1 -strings
 ```
