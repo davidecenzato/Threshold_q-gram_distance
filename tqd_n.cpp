@@ -75,7 +75,7 @@ int main(int argc, char **argv){
 
   //check the value for q
 	if (q > 32){
-    printf("Error. Maximum value for q is 32.\n");
+    fprintf( stderr,"Error. Maximum value for q is 32.\n");
     exit(1);
 	}
 
@@ -84,7 +84,7 @@ int main(int argc, char **argv){
 	//----------------------------------------------------------------------------
 	// INIZIALIZING THE VARIABLES
 	//----------------------------------------------------------------------------
-  if (verbose > 3){printf("Inizialise the variables \n");}
+  if (verbose > 3){fprintf( stderr,"Inizialise the variables \n");}
 	char *str1;
 	char *str2;
 
@@ -108,29 +108,30 @@ int main(int argc, char **argv){
   //BEGINNING OF THE COMPUTATION
   //----------------------------------------------------------------------------
   //calculate the length of the strings ----------------------------------------
-  if (verbose > 3){printf("Calculate the length of the strings.\n");}
+  if (verbose > 3){fprintf( stderr,"Calculate the length of the strings.\n");}
   int len1 = strlen(str1);
   int len2 = strlen(str2);
   if (len1<q){
-        printf("Error. the first string is shorter then q.\n");
+        fprintf( stderr,"Error. the first string is shorter then q.\n");
         exit(1);
   }
   if (len2<q){
-        printf("Error. the second string is shorter then q.\n");
+        fprintf( stderr,"Error. the second string is shorter then q.\n");
         exit(1);
   }
-  if (verbose > 3){printf("First string:  %d\n",len1);}
-  if (verbose > 3){printf("Second string: %d\n",len2);}
+  if (verbose > 3){fprintf( stderr,"First string:  %d\n",len1);}
+  if (verbose > 3){fprintf( stderr,"Second string: %d\n",len2);}
 
 
 	//convert the strings in arrays of numbers -----------------------------------
-	if (verbose > 3){printf("Convert the strings in numbers.\n");}
+	if (verbose > 3){fprintf( stderr,"Convert the strings in numbers.\n");}
 	int *numericStr1;
 	int *numericStr2;
 	numericStr1 = (int *)malloc(len1*sizeof(int));
 	numericStr2 = (int *)malloc(len2*sizeof(int));
 	if (numericStr1 == NULL || numericStr2 == NULL){
-		printf("\n Error.\n Out of memory.\n");
+		fprintf( stderr,"\n Error.\n Out of memory.\n");
+    exit(1);
 	}
 
 	str2num(numericStr1,len1,str1);
@@ -143,7 +144,7 @@ int main(int argc, char **argv){
 
 	//----------calculate the profile
 
-	if (verbose > 3){printf("Calculate the profile\n");}
+	if (verbose > 3){fprintf( stderr,"Calculate the profile\n");}
 
   unsigned long long int pos=0;
 	int qgram[q];
@@ -197,11 +198,11 @@ int main(int argc, char **argv){
 
 
 	//calculate the distance
-	if (verbose > 3){printf("Calculate the distance\n");}
+	if (verbose > 3){fprintf( stderr,"Calculate the distance\n");}
 	unsigned long long int dist = profile.calculateDistance();
 
 	//calculate the total pair-status
-	if (verbose > 3){printf("Calcolate the pair statuses\n");}
+	if (verbose > 3){fprintf( stderr,"Calcolate the pair statuses\n");}
 
 	int *status;
 	status=profile.get_total_status();
@@ -209,43 +210,43 @@ int main(int argc, char **argv){
 	//------------------------------------------------------------------------
 	//PRINT THE RESULTS
 	//------------------------------------------------------------------------
-	printf("------------------------------------------\n");
-	printf("RESULTS\n");
-	printf("------------------------------------------\n");
+	fprintf( stderr,"------------------------------------------\n");
+	fprintf( stderr,"RESULTS\n");
+	fprintf( stderr,"------------------------------------------\n");
 
-	printf("=== INPUT: ===============================\n");
+	fprintf( stderr,"=== INPUT: ===============================\n");
 
-	printf("alphabet: a, t, c, g, A, T, C, G.\n");
-	cout << "q: "<< q <<"\n";
+	fprintf( stderr,"alphabet: a, t, c, g, A, T, C, G.\n");
+	cerr << "q: "<< q <<"\n";
 	if(type_input==2){
-		cout<< "first string: "<< input1 << "\n";
-		cout<< "second string: "<< input2 << "\n\n";
+    fprintf( stderr,"first string: %s\n", input1);
+    fprintf( stderr,"second string: %s\n\n", input2);
 	}
 
 
-	printf("\n=== TIME: ================================\n");
+	fprintf( stderr,"\n=== TIME: ================================\n");
 
 	if(type_input==2){
-		printf("time to load the fasta files (seconds): %ld\n",m1);
+		fprintf( stderr,"time to load the fasta files (seconds): %ld\n",m1);
 	}
 //	m = difftime(time(NULL), now);
-  //  printf("calculate time (seconds): %ld\n\n",m);
+  //  fprintf( stderr,"calculate time (seconds): %ld\n\n",m);
 
 
-	printf("\n=== THRESHOLD Q-GRAM DISTANCE: ===========\n");
+	fprintf( stderr,"\n=== THRESHOLD Q-GRAM DISTANCE: ===========\n");
 
-	cout << "number of nodes: " << profile.getNumber_of_nodes()<<"\n";
-	//printf("percentage: %.2f\n\n",(float(dist)/n_nodes));
+	cerr << "number of nodes: " << profile.getNumber_of_nodes()<<"\n";
+	//fprintf( stderr,"percentage: %.2f\n\n",(float(dist)/n_nodes));
 
-	cout<<"counting pair status in the profiles:\n";
+	fprintf( stderr,"counting pair status in the profiles:\n");
 	for (int i=0;i<3;i++){
 		for (int j=0;j<3;j++){
-			printf("%d - %d: %d \n",i,j,status[i*(threshold+2) + j]);
+			fprintf( stderr,"%d - %d: %d \n",i,j,status[i*(threshold+2) + j]);
 		}
 	}
-	printf("\n");
+	fprintf( stderr,"\n");
 
-	cout << "\nTQD: "<<dist<<"\n";
+	cout << "TQD: "<<dist<<"\n";
 
 }
 
@@ -264,7 +265,8 @@ char* load_fasta(char file_name[]){
 	// we create the string str that will contain the string that we are going to read
 	char* str = (char *)malloc(max_string_length*sizeof(char));
 	if (str == NULL){
-		printf("\n Error.\n Out of memory.\n");
+		fprintf( stderr,"\n Error.\n Out of memory.\n");
+    exit(1);
 	}
 
 	// create and read the FILE
@@ -288,7 +290,7 @@ char* load_fasta(char file_name[]){
 		}
 		fclose(f);
 	}else{
-		printf("Error. \nThe file %s cannot be open.\n",file_name);
+		fprintf( stderr,"Error. \nThe file %s cannot be open.\n",file_name);
 		exit(1);
 	}
 	return str;
@@ -307,7 +309,7 @@ void str2num (int num[], int NumDim, char str[]){
 			}
 			if(j==alphSize-1 && str[i]!=NucleicAlphabet[alphSize-1]  && str[i]!=NucleicAlphabetUpperCase[alphSize-1] ){ // if we have look at every character in the alphabet and we have not find the character
 			   num[i]=-1;                                             // then there is an error
-			   printf("\nError.\nThe character '%c' does not belong to the alphabet.",str[i]);
+			   fprintf( stderr,"\nError.\nThe character '%c' does not belong to the alphabet.\n",str[i]);
 			   exit(1);
 			}
 		}
