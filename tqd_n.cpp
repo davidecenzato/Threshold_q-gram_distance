@@ -1,7 +1,6 @@
 // program that calculate the threshold q-gram distance between two nucleotide strings
+// Alessio Milanese <milanese@embl.de>
 
-//Alessio Milanese
-//13 November 2016
 
 #include "Profile.cpp"
 
@@ -15,7 +14,6 @@
 
 
 //----------TO SET:
-int threshold = 1;
 int max_string_length = 36000000; // you cannot read strings longer than this value
 
 
@@ -25,11 +23,9 @@ int max_string_length = 36000000; // you cannot read strings longer than this va
 //----------------------------------------------------------------------------------//
 
 
-
-
-Profile profile(threshold);
 int alphSize = 4; //alphabet size, here is tqd_n for nucleotides
 int q; //length of the q-grams
+int threshold;
 char NucleicAlphabet [4] = {'a','t','c','g'};
 char NucleicAlphabetUpperCase [4] = {'A','T','C','G'};
 
@@ -44,15 +40,12 @@ void str2num (int num[], int NumDim, char str[]);
 //load a fasta file
 char* load_fasta(char file_name[]);
 
-// calculate the profiles of two strings and save it in a RB-tree
-void createProfile (int str1[], int strlen1, int str2[], int strlen2);
-
 // calculate the position in the profile of a given q-gram, and calculate the
 // q-gram given a position in the profile
 unsigned long long int qposition (int vec[],int size_vec);
 void qgramFromPosition (int vec[], unsigned long long int pos);
 
-//useful function
+//function to calculate the pow with long long int
 unsigned long long int myPow(int a ,int b);
 
 
@@ -70,7 +63,7 @@ int main(int argc, char **argv){
   // q
   q = std::stoi (argv[1]);
   // threshold
-  int threshold_val = std::stoi (argv[2]);
+  int threshold = std::stoi (argv[2]);
   // type_input: 1 strings, 2 files
   int type_input = std::stoi (argv[3]);
   // input 1
@@ -85,6 +78,8 @@ int main(int argc, char **argv){
     printf("Error. Maximum value for q is 32.\n");
     exit(1);
 	}
+
+  Profile profile(threshold);
 
 	//----------------------------------------------------------------------------
 	// INIZIALIZING THE VARIABLES
@@ -149,7 +144,57 @@ int main(int argc, char **argv){
 	//----------calculate the profile
 
 	if (verbose > 3){printf("Calculate the profile\n");}
-	createProfile (numericStr1, len1, numericStr2, len2);
+
+  unsigned long long int pos=0;
+	int qgram[q];
+
+	// find the first q-gram of the FIRST string------------------------------
+	for (int j=0;j<q;j++){
+			qgram[j]=str1[j];
+	}
+
+	// calculate the position of the first q-gram and update the profile
+	pos = qposition(qgram,q);
+	profile.insert(pos,1);
+
+
+	// calculate the entire profile
+	for(int i=1;i<len1-q+1;i++){
+		// calculate the next position using the previous one
+		pos=(pos-( str1[i-1] *  myPow(alphSize,q-1) )) * alphSize + str1[i+q-1];
+		//insert
+		profile.insert(pos,1);
+	}
+
+	// calculate the profile for the second string
+	pos=0;
+
+	// find the first q-gram of the SECOND string------------------------------
+	for (int j=0;j<q;j++){
+			qgram[j]=str2[j];
+	}
+
+	// calculate the position of the first q-gram and update the profile
+	pos = qposition(qgram,q);
+	profile.insert(pos,2);
+
+	// calculate the entire profile
+	for(int i=1;i<len2-q+1;i++){
+		// calculate the next position using the previous one
+		pos=(pos-( str2[i-1] *  myPow(alphSize,q-1) )) * alphSize + str2[i+q-1];
+		//insert
+		profile.insert(pos,2);
+
+	}
+
+
+
+
+
+
+
+
+
 
 	//calculate the distance
 	if (verbose > 3){printf("Calculate the distance\n");}
@@ -268,54 +313,7 @@ void str2num (int num[], int NumDim, char str[]){
 		}
 	}
 }
-//////////////////////  CREATE PROFILE  --------------------------------------------------------------------------
-// calculate the profile of a given string
 
-void createProfile (int str1[], int strlen1, int str2[], int strlen2){
-
-	unsigned long long int pos=0;
-	int qgram[q];
-
-	// find the first q-gram of the FIRST string------------------------------
-	for (int j=0;j<q;j++){
-			qgram[j]=str1[j];
-	}
-
-	// calculate the position of the first q-gram and update the profile
-	pos = qposition(qgram,q);
-	profile.insert(pos,1);
-
-
-	// calculate the entire profile
-	for(int i=1;i<strlen1-q+1;i++){
-		// calculate the next position using the previous one
-		pos=(pos-( str1[i-1] *  myPow(alphSize,q-1) )) * alphSize + str1[i+q-1];
-		//insert
-		profile.insert(pos,1);
-	}
-
-	// calculate the profile for the second string
-	pos=0;
-
-	// find the first q-gram of the SECOND string------------------------------
-	for (int j=0;j<q;j++){
-			qgram[j]=str2[j];
-	}
-
-	// calculate the position of the first q-gram and update the profile
-	pos = qposition(qgram,q);
-	profile.insert(pos,2);
-
-	// calculate the entire profile
-	for(int i=1;i<strlen2-q+1;i++){
-		// calculate the next position using the previous one
-		pos=(pos-( str2[i-1] *  myPow(alphSize,q-1) )) * alphSize + str2[i+q-1];
-		//insert
-		profile.insert(pos,2);
-
-	}
-    return;
-}
 //////////////////////  Q-GRAM => PROFILE POSITION  -------------------------------------------------------------
 // calculate the position of the q-gram passed as input, in the q-gram profile
 
