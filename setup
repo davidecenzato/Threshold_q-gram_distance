@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+
 printf "Compiling the code..."
 g++ -o tqd-c tqd_n.cpp
 
@@ -9,3 +11,19 @@ then printf "done\n";
 fi
 
 chmod +x tqd-c
+
+printf "Do you want to add this script to the path (yes/no)? "
+read response
+
+if [[ ($response == "yes") || ($response == "y") ]];
+then
+  LINE="export PATH=\"\$PATH:$DIR\""
+  printf "adding %s to your \$PATH..." "$DIR"
+
+  printf '\n#threshold q-gram distance dir path\n%s\n' "$LINE" >> ~/.bashrc
+  rc=$?;
+  if [[ $rc == 0 ]];
+  then printf "done\n";
+  fi
+
+fi
