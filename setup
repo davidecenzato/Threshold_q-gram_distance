@@ -2,7 +2,10 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
-printf "Compiling the code..."
+# compilr the code -------------------------------------------------------------
+printf "Compiling the code:\n"
+# main code ---------------------
+printf "tqd_n.cpp.............."
 g++ -o tqd-c tqd_n.cpp
 
 rc=$?;
@@ -12,7 +15,19 @@ fi
 
 chmod +x tqd-c
 
-printf "Do you want to add this script to the path (yes/no)? "
+# code for check input file --------
+printf "check_input_file.cpp..."
+g++ -o check_input_file check_input_file.cpp
+
+rc=$?;
+if [[ $rc == 0 ]];
+then printf "done\n";
+fi
+
+chmod +x check_input_file
+
+
+printf "\nDo you want to add this script to the path (yes/no)? "
 read response
 
 if [[ ($response == "yes") || ($response == "y") ]];

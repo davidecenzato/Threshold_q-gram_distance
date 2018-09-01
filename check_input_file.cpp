@@ -90,12 +90,15 @@ int main(int argc, char **argv){
 		exit(1);
 	}
 
-  fprintf( stdout,"%d\n",max_length);
-  for(int i = 0;i<100;i++){
-    if(alphabet[i] == ' '){
-      break;
+  fprintf( stdout,"%d",max_length);
+  if (search_alph == 1){
+    fprintf( stdout,"\t%c",alphabet[0]);
+    for(int i = 1;i<100;i++){
+      if(alphabet[i] == ' '){
+        break;
+      }
+      fprintf( stdout,"\t%c",alphabet[i]);
     }
-    fprintf( stdout,"%c, ",alphabet[i]);
   }
   fprintf( stdout,"\n");
   exit(0);
