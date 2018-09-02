@@ -72,6 +72,7 @@ def main(argv=None):
     if (args.input_strings is None): strings = False
 
     # check the file to find the maximum length for the string -----------------
+    if args.verbose > 2: sys.stderr.write("check input files.\n")
     max_string_length = 0
     if strings:
         max_string_length = max(len(args.first_file),len(args.second_file)) + 10

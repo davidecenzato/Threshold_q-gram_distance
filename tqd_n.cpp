@@ -104,7 +104,7 @@ int main(int argc, char **argv){
   //BEGINNING OF THE COMPUTATION
   //----------------------------------------------------------------------------
   //calculate the length of the strings ----------------------------------------
-  if (verbose > 3){fprintf( stderr,"Calculate the length of the strings.\n");}
+  if (verbose > 2){fprintf( stderr,"Calculate the length of the strings.\n");}
   int len1 = strlen(str1);
   int len2 = strlen(str2);
   if (len1<q){
@@ -120,7 +120,7 @@ int main(int argc, char **argv){
 
 
 	//convert the strings in arrays of numbers -----------------------------------
-	if (verbose > 3){fprintf( stderr,"Convert the strings in numbers.\n");}
+	if (verbose > 2){fprintf( stderr,"Convert the strings in numbers.\n");}
 	int *numericStr1;
 	int *numericStr2;
 	numericStr1 = (int *)malloc(len1*sizeof(int));
@@ -140,7 +140,7 @@ int main(int argc, char **argv){
 
 	//----------calculate the profile
 
-	if (verbose > 3){fprintf( stderr,"Calculate the profile.\n");}
+	if (verbose > 2){fprintf( stderr,"Calculate the profile.\n");}
 
   unsigned long long int pos=0;
 	int qgram[q];
@@ -194,7 +194,7 @@ int main(int argc, char **argv){
 
 
 	//calculate the distance
-	if (verbose > 3){fprintf( stderr,"Calculate the distance.\n");}
+	if (verbose > 2){fprintf( stderr,"Calculate the distance.\n");}
 	unsigned long long int dist = profile.calculateDistance();
 
 	//calculate the total pair-status
@@ -206,16 +206,16 @@ int main(int argc, char **argv){
 	//------------------------------------------------------------------------
 	//PRINT THE RESULTS
 	//------------------------------------------------------------------------
-	if (verbose > 3){fprintf( stderr,"------------------------------------------\n");}
+	if (verbose > 2){fprintf( stderr,"------------------------------------------\n");}
 
-	if (verbose > 3){fprintf( stderr,"=== INPUT:\n");}
+	if (verbose > 2){fprintf( stderr,"=== INPUT:\n");}
 
-	if (verbose > 3){fprintf( stderr,"alphabet: a, t, c, g, A, T, C, G.\n");}
-	if (verbose > 3){cerr << "q: "<< q <<"\n";}
-  if (verbose > 3){cerr << "threshold: "<< threshold <<"\n";}
+	if (verbose > 2){fprintf( stderr,"alphabet: a, t, c, g, A, T, C, G.\n");}
+	if (verbose > 2){cerr << "q: "<< q <<"\n";}
+  if (verbose > 2){cerr << "threshold: "<< threshold <<"\n";}
 	if(type_input==2){
-    if (verbose > 3){fprintf( stderr,"first file: %s\n", input1);}
-    if (verbose > 3){fprintf( stderr,"second file: %s\n", input2);}
+    if (verbose > 2){fprintf( stderr,"first file: %s\n", input1);}
+    if (verbose > 2){fprintf( stderr,"second file: %s\n", input2);}
 	}
 
 	if (verbose > 4){fprintf( stderr,"\n=== PROFILE:\n");}
@@ -230,7 +230,7 @@ int main(int argc, char **argv){
 		}
 	}
 
-  if (verbose > 3){fprintf( stderr,"\n=== THRESHOLD Q-GRAM DISTANCE:\n");}
+  if (verbose > 2){fprintf( stderr,"\n=== THRESHOLD Q-GRAM DISTANCE:\n");}
 	cout <<dist<<"\n";
 
 }
