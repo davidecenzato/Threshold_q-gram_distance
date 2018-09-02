@@ -68,6 +68,8 @@ int main(int argc, char **argv){
   int verbose = std::stoi (argv[6]);
   // max length for the strings
   max_string_length = std::stoi (argv[7]);
+  // file where to save the pair status
+  char *pair_status_file = argv[8];
 
   //check the value for q
 	if (q > 32){
@@ -198,10 +200,11 @@ int main(int argc, char **argv){
 	unsigned long long int dist = profile.calculateDistance();
 
 	//calculate the total pair-status
-	if (verbose > 3){fprintf( stderr,"Calcolate the pair statuses.\n");}
-
-	int *status;
-	status=profile.get_total_status();
+  int *status;
+  if (strcmp(pair_status_file,"no_pair_status") != 0){
+    if (verbose > 2){fprintf( stderr,"Calcolate the pair statuses.\n");}
+  	status=profile.get_total_status();
+  }
 
 	//------------------------------------------------------------------------
 	//PRINT THE RESULTS
@@ -218,17 +221,39 @@ int main(int argc, char **argv){
     if (verbose > 2){fprintf( stderr,"second file: %s\n", input2);}
 	}
 
-	if (verbose > 4){fprintf( stderr,"\n=== PROFILE:\n");}
-
-	if (verbose > 4){cerr << "number of nodes: " << profile.getNumber_of_nodes()<<"\n";}
-	//fprintf( stderr,"percentage: %.2f\n\n",(float(dist)/n_nodes));
-
-	if (verbose > 4){fprintf( stderr,"counting pair status in the profiles:\n");}
-	for (int i=0;i<3;i++){
-		for (int j=0;j<3;j++){
-			if (verbose > 4){fprintf( stderr,"%d - %d: %d \n",i,j,status[i*(threshold+2) + j]);}
-		}
-	}
+  // print pair status
+  if (strcmp(pair_status_file,"no_pair_status") != 0){
+      // print to stderr ---------
+    	if (verbose > 3){fprintf( stderr,"\n=== PROFILE:\n");}
+    	if (verbose > 3){cerr << "number of nodes: " << profile.getNumber_of_nodes()<<"\n";}
+    	if (verbose > 3){fprintf( stderr,"counting pair status in the profiles:\n");}
+    	for (int i=0;i<(threshold + 2);i++){
+    		for (int j=0;j<(threshold + 2);j++){
+    			if (verbose > 3){
+            if(i>threshold){fprintf( stderr,"R - ");
+            }else{fprintf( stderr,"%d - ",i);}
+            if(j>threshold){fprintf( stderr,"R");
+            }else{fprintf( stderr,"%d",j);}
+            fprintf( stderr,": %d \n",status[i*(threshold+2) + j]);
+          }
+    		}
+    	}
+      // print to file --------
+      // note that we are writing to a temp file created in the python wrapper
+      FILE *fp;
+      fp = fopen(pair_status_file, "w");
+      for (int i=0;i<(threshold + 2);i++){
+    		for (int j=0;j<(threshold + 2);j++){
+            if(i>threshold){fprintf(fp,"R - ");
+            }else{fprintf(fp,"%d - ",i);}
+            if(j>threshold){fprintf(fp,"R");
+            }else{fprintf(fp,"%d",j);}
+            fprintf(fp,": %d \n",status[i*(threshold+2) + j]);
+    		}
+    	}
+      fclose(fp);
+  }
+  // end print pair status
 
   if (verbose > 2){fprintf( stderr,"\n=== THRESHOLD Q-GRAM DISTANCE:\n");}
 	cout <<dist<<"\n";
