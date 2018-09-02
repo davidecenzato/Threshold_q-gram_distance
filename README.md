@@ -31,3 +31,17 @@ If you want to directly input the string sequences:
 ```bash
 tqd ATGGATCAGTC CTGGATCAGAC -q 3 -threshold 1 -strings
 ```
+
+Parameters inputs
+--------------
+
+```bash
+Usage: tqd <first_file> <second_file> [options]
+
+Options:
+   -q           INT   value of q in the q-grams[10]
+   -threshold   INT   value of the threshold [1]
+   -strings           set if the inputs are strings instead of files
+   -pair_status FILE  file to save the pair statuses
+   -verbose     INT   verbose level: 1=error, 2=warning, 3=message, 4+=debugging [3]
+```
