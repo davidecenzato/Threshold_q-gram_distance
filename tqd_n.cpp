@@ -12,17 +12,11 @@
 #include <stdint.h>
 #include <time.h>
 
-
-//----------TO SET:
-int max_string_length = 36000000; // you cannot read strings longer than this value
-
-
-
 //----------------------------------------------------------------------------------//
 //                                   GLOBAL VARIABLES                               //
 //----------------------------------------------------------------------------------//
 
-
+int max_string_length;
 int alphSize = 4; //alphabet size, here is tqd_n for nucleotides
 int q; //length of the q-grams
 int threshold;
@@ -72,6 +66,8 @@ int main(int argc, char **argv){
   char *input2 = argv[5];
   // verbose level
   int verbose = std::stoi (argv[6]);
+  // max length for the strings
+  max_string_length = std::stoi (argv[7]);
 
   //check the value for q
 	if (q > 32){

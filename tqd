@@ -71,6 +71,41 @@ def main(argv=None):
     if (args.threshold is None): args.threshold = 1
     if (args.input_strings is None): strings = False
 
+    # check the file to find the maximum length for the string -----------------
+    max_string_length = 0
+    if strings:
+        max_string_length = max(len(args.first_file),len(args.second_file)) + 10
+    else:
+        # we run the script to find the maximum length
+        # string 1 --------------------------------------
+        call_check_file = relative_path + 'check_input_file ' + args.first_file + " 2"
+
+        if args.verbose > 3: sys.stderr.write("call:\n"+call_check_file+"\n")
+
+        call_checkCMD = shlex.split(call_check_file)
+        call_check_cmd = subprocess.Popen(call_checkCMD, stdout=subprocess.PIPE)
+        out1 = call_check_cmd.stdout.readline().decode("utf-8").rstrip()
+
+        return_code = call_check_cmd.wait()
+        if return_code: sys.exit(1)
+        # string 2 --------------------------------------
+        call_check_file = relative_path + 'check_input_file ' + args.second_file + " 2"
+
+        if args.verbose > 3: sys.stderr.write("call:\n"+call_check_file+"\n")
+
+        call_checkCMD = shlex.split(call_check_file)
+        call_check_cmd = subprocess.Popen(call_checkCMD, stdout=subprocess.PIPE)
+        out2 = call_check_cmd.stdout.readline().decode("utf-8").rstrip()
+
+        return_code = call_check_cmd.wait()
+        if return_code: sys.exit(1)
+
+        # find max length --------------------------------------
+        max_string_length = max(int(out1),int(out2)) + 10
+
+
+
+
     # call tqd-c ---------------------------------------------------------------
     call_tqd = relative_path + 'tqd-c ' + str(args.q) + " " + str(args.threshold)
     if strings:
@@ -78,6 +113,8 @@ def main(argv=None):
     else:
         call_tqd = call_tqd + " 2 "
     call_tqd = call_tqd + args.first_file + " " + args.second_file +" "+ str(args.verbose)
+    # we add the maximum length for the string
+    call_tqd = call_tqd +" "+ str(max_string_length)
 
     if args.verbose > 3:
         sys.stderr.write("call:\n"+call_tqd+"\n")
