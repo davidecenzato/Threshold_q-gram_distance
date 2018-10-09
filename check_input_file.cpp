@@ -22,6 +22,7 @@ int main(int argc, char **argv){
 
   // record the maximum length
   int max_length = 0;
+  int current_length=0;
 
   // Alphabet
   char alphabet[100];
@@ -46,7 +47,7 @@ int main(int argc, char **argv){
     // END OF FIRST LINE -------------------------------------------------------
 		//after the first '\n' I start to read the sequence
 		int c;
-		int current_length=0;
+		current_length=0;
 		c = fgetc (f);
 		while(c != EOF){
       		if (c != '\n'){
@@ -89,6 +90,11 @@ int main(int argc, char **argv){
 		fprintf( stderr,"Error. \nThe file %s cannot be open.\n",file_name);
 		exit(1);
 	}
+
+  // update max length
+  if (current_length > max_length){
+    max_length = current_length;
+  }
 
   fprintf( stdout,"%d",max_length);
   if (search_alph == 1){
