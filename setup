@@ -6,7 +6,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 printf "Compiling the code:\n"
 # main code ---------------------
 printf "tqd_n.cpp.............."
-g++ -o tqd-c tqd_n.cpp
+g++ -std=c++11 -o tqd-c tqd_n.cpp
 
 rc=$?;
 if [[ $rc == 0 ]];
@@ -17,7 +17,7 @@ chmod +x tqd-c
 
 # code for check input file --------
 printf "check_input_file.cpp..."
-g++ -o check_input_file check_input_file.cpp
+g++ -std=c++11 -o check_input_file check_input_file.cpp
 
 rc=$?;
 if [[ $rc == 0 ]];
