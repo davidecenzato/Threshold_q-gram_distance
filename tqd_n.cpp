@@ -101,6 +101,14 @@ int main(int argc, char **argv){
 
   time_t m1 = difftime(time(NULL), m1);
 
+  if (verbose > 6){
+    cerr << "\n>> USED STRINGS:\n";
+    cerr << "First string:\n";
+    cerr << str1 << "\n\n";
+    cerr << "Second string:\n";
+    cerr << str2 << "\n\n";
+  }
+
 
   //----------------------------------------------------------------------------
   //BEGINNING OF THE COMPUTATION
@@ -138,6 +146,20 @@ int main(int argc, char **argv){
   if (type_input == 2){
     free(str1); // free memory of the char string
     free(str2); // free memory of the char string
+  }
+
+  if (verbose > 6){
+    cerr << "\n>> USED NUMERIC STRINGS:\n";
+    cerr << "First string:\n";
+    for(int i=0;i<len1;i++){
+      cerr << numericStr1[i];
+    }
+    cerr <<  "\n\n";
+    cerr << "Second string:\n";
+    for(int i=0;i<len2;i++){
+      cerr << numericStr2[i];
+    }
+    cerr << "\n\n";
   }
 
 	//----------calculate the profile
