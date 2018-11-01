@@ -45,7 +45,7 @@ Options:
    -threshold   INT   value of the threshold [1]
    -strings           set if the inputs are strings instead of files
    -pair_status FILE  file to save the pair statuses
-   -verbose     INT   verbose level: 1=error, 2=warning, 3=message, 4+=debugging [3]
+   -verbose     INT   verbose level: 1=error, 2=warning, 3=message, 4+=debugging [2]
 
         '''
     return str_msg
@@ -69,7 +69,7 @@ def main(argv=None):
     # set defaults -------------------------------------------------------------
     strings = True
     pair_status_file = ""
-    if (args.verbose is None): args.verbose = 3
+    if (args.verbose is None): args.verbose = 2
     if (args.q is None): args.q = 10
     if (args.threshold is None): args.threshold = 1
     if (args.input_strings is None): strings = False
