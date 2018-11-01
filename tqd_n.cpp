@@ -143,11 +143,6 @@ int main(int argc, char **argv){
 	str2num(numericStr1,len1,str1);
 	str2num(numericStr2,len2,str2);
 
-  if (type_input == 2){
-    free(str1); // free memory of the char string
-    free(str2); // free memory of the char string
-  }
-
   if (verbose > 6){
     cerr << "\n>> USED NUMERIC STRINGS:\n";
     cerr << "First string:\n";
