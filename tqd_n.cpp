@@ -166,7 +166,7 @@ int main(int argc, char **argv){
 
 	// find the first q-gram of the FIRST string------------------------------
 	for (int j=0;j<q;j++){
-			qgram[j]=str1[j];
+			qgram[j]=numericStr1[j];
 	}
 
 	// calculate the position of the first q-gram and update the profile
@@ -177,7 +177,7 @@ int main(int argc, char **argv){
 	// calculate the entire profile
 	for(int i=1;i<len1-q+1;i++){
 		// calculate the next position using the previous one
-		pos=(pos-( str1[i-1] *  myPow(alphSize,q-1) )) * alphSize + str1[i+q-1];
+		pos=(pos-( numericStr1[i-1] *  myPow(alphSize,q-1) )) * alphSize + numericStr1[i+q-1];
 		//insert
 		profile.insert(pos,1);
 	}
@@ -187,7 +187,7 @@ int main(int argc, char **argv){
 
 	// find the first q-gram of the SECOND string------------------------------
 	for (int j=0;j<q;j++){
-			qgram[j]=str2[j];
+			qgram[j]=numericStr2[j];
 	}
 
 	// calculate the position of the first q-gram and update the profile
@@ -197,7 +197,7 @@ int main(int argc, char **argv){
 	// calculate the entire profile
 	for(int i=1;i<len2-q+1;i++){
 		// calculate the next position using the previous one
-		pos=(pos-( str2[i-1] *  myPow(alphSize,q-1) )) * alphSize + str2[i+q-1];
+		pos=(pos-( numericStr2[i-1] *  myPow(alphSize,q-1) )) * alphSize + numericStr2[i+q-1];
 		//insert
 		profile.insert(pos,2);
 
