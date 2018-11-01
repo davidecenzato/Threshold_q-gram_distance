@@ -35,7 +35,7 @@ tqd ATGGATCAGTC CTGGATCAGAC -q 3 -threshold 1 -strings
 Parameters inputs
 --------------
 
-```bash
+```
 Usage: tqd <first_file> <second_file> [options]
 
 Options:
@@ -43,5 +43,5 @@ Options:
    -threshold   INT   value of the threshold [1]
    -strings           set if the inputs are strings instead of files
    -pair_status FILE  file to save the pair statuses
-   -verbose     INT   verbose level: 1=error, 2=warning, 3=message, 4+=debugging [3]
+   -verbose     INT   verbose level: 1=error, 2=warning, 3=message, 4+=debugging [2]
 ```
