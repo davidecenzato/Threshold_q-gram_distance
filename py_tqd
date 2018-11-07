@@ -1,0 +1,316 @@
+#!/usr/bin/env python
+
+# tqd implementation in python
+
+import os
+import sys
+import argparse
+import shlex
+import shutil
+from timeit import default_timer
+import glob
+from numpy import uint64 as ull
+
+start= default_timer()
+
+# ------------------------------------------------------------------------------
+# FUNCTIONS
+# ------------------------------------------------------------------------------
+
+# message of the script --------------------------------------------------------
+class CapitalisedHelpFormatter(argparse.HelpFormatter):
+    def add_usage(self, usage, actions, groups, prefix=None):
+        if prefix is None:
+            prefix = ''
+        return super(CapitalisedHelpFormatter, self).add_usage(usage, actions, groups, prefix)
+
+def msg(name=None):
+    str_msg = '''
+\00
+Program: tqd - threshold q-gram distance
+
+Usage: tqd <first_file> <second_file> [options]
+
+Options:
+   -q           INT   value of q in the q-grams[10]
+   -threshold   INT   value of the threshold [1]
+   -strings           set if the inputs are strings instead of files
+   -alphabet    STR   alphabet to be use. [DNA]
+                      Possible values: DNA,RNA,AA
+   -verbose     INT   verbose level: 1=error, 2=warning, 3=message, 4+=debugging [2]
+
+        '''
+    return str_msg
+
+# function to calculate the pow that returns an unsigned long long int ---------
+def myPow(a,b):
+    res = ull(a)
+    for i in range(1,b):
+        res = res * ull(a)
+    return res
+
+# calculate the position of the q-gram passed as input, in the q-gram profile --
+def qposition(qgram):
+    pos = ull(0)
+    molt = ull(1)
+    for i in range(len(qgram)-1,-1,-1):
+        pos = pos + ull(dict_num[qgram[i]]) * molt
+        molt = molt * alphSize
+
+    return pos
+
+
+# ------------------------------------------------------------------------------
+# PREPARE INPUTS
+# ------------------------------------------------------------------------------
+
+# parse input parameters -------------------------------------------------------
+parser = argparse.ArgumentParser(usage=msg(), formatter_class=CapitalisedHelpFormatter,add_help=False)
+parser.add_argument('first_file', action="store", default=None, help='first file/string')
+parser.add_argument('second_file', action="store", default=None, help='second file/string')
+parser.add_argument('-q', type=int, action="store", dest='q', default=None, help='value of q in the q-grams')
+parser.add_argument('-threshold', type=int, action="store", dest='threshold', default=None, help='value of the threshold')
+parser.add_argument('-strings', action='store_true', default=None, dest='input_strings', help='set if the inputs are strings instead of files')
+parser.add_argument('-verbose', action='store', type=int, default=None, dest='verbose', help='Verbose levels')
+parser.add_argument('-alphabet', action="store", default=None, dest='alphabet', help='alphabet to use',choices=['DNA','RNA','AA'])
+args = parser.parse_args()
+
+# set defaults -------------------------------------------------------------
+strings = True
+if (args.verbose is None): args.verbose = 2
+if (args.q is None): args.q = 10
+if (args.threshold is None): args.threshold = 1
+if (args.input_strings is None): strings = False
+if (args.alphabet is None): args.alphabet = "DNA"
+
+if args.alphabet == "DNA" or args.alphabet == "RNA":
+    alphSize = ull(4)
+    if args.q > 31:
+        sys.stderr.write("[E::main] Error. Max value for q is 31.\n")
+        sys.exit(1)
+else:
+    alphSize = ull(22)
+    if args.q > 14:
+        sys.stderr.write("[E::main] Error. Max value for q is 14.\n")
+        sys.exit(1)
+
+# alhpabets --------------------------------------------------------------------
+alphabet_p = dict()
+alphabet_p["AA"] = "ARNDBCEQZGHILKMFPSTWYVarndbceqzghilkmfpstwyv"
+alphabet_p["DNA"] = "ATCGatcg"
+alphabet_p["RNA"] = "AUCGaucg"
+
+# alphabet to convert char to num ----------------------------------------------
+dna_ci = {'A': 0, 'C': 1, 'T': 2, 'G': 3, 'a': 0, 'c': 1, 't': 2, 'g': 3}
+rna_ci = {'A': 0, 'C': 1, 'U': 2, 'G': 3, 'a': 0, 'c': 1, 'u': 2, 'g': 3}
+aa_ci = {"A":0,"R":1,"N":2,"D":3,"B":4,"C":5,"E":6,"Q":7,"Z":8,"G":9,"H":10,"I":11,
+         "L":12,"K":13,"M":14,"F":15,"P":16,"S":17,"T":18,"W":19,"Y":20,"V":21,
+         "a":0,"r":1,"n":2,"d":3,"b":4,"c":5,"e":6,"q":7,"z":8,"g":9,"h":10,"i":11,
+         "l":12,"k":13,"m":14,"f":15,"p":16,"s":17,"t":18,"w":19,"y":20,"v":21}
+
+# select the correct dictionary to convert char to numbers
+if args.alphabet == "DNA":
+    dict_num = dna_ci
+    dict_alp = list(alphabet_p["DNA"])
+if args.alphabet == "RNA":
+    dict_num = rna_ci
+    dict_alp = list(alphabet_p["RNA"])
+if args.alphabet == "AA":
+    dict_num = aa_ci
+    dict_alp = list(alphabet_p["AA"])
+
+# ------------------------------------------------------------------------------
+# LOAD AND CHECK THE TWO STRINGS
+# ------------------------------------------------------------------------------
+
+# create the two list of strings -----------------------------------------------
+if args.verbose > 2:
+    sys.stderr.write("Parse the strings...")
+str1 = list()
+str2 = list()
+if not strings:
+    # load first file --------------
+    try:
+        location = open(args.first_file,'r')
+        current_str = ""
+        for line in location:
+            if(line[0] != ">"):
+                current_str = current_str + line.rstrip()
+            else:
+                if current_str != "":
+                    str1.append(current_str)
+                current_str = ""
+        # add last current location
+        if current_str != "":
+            str1.append(current_str)
+        location.close()
+    except:
+        sys.stderr.write("[E::main] Error loading first FASTA file\n")
+        sys.exit(1)
+
+    # load second file --------------
+    try:
+        location = open(args.second_file,'r')
+        current_str = ""
+        for line in location:
+            if(line[0] != ">"):
+                current_str = current_str + line.rstrip()
+            else:
+                if current_str != "":
+                    str2.append(current_str)
+                current_str = ""
+        # add last current location
+        if current_str != "":
+            str2.append(current_str)
+        location.close()
+    except:
+        sys.stderr.write("[E::main] Error loading second FASTA file\n")
+        sys.exit(1)
+
+
+else:
+    str1.append(args.first_file)
+    str2.append(args.second_file)
+
+if args.verbose > 2:
+    sys.stderr.write("done\n")
+
+# look for wrong character -----------------------------------------------------
+if args.verbose > 2:
+    sys.stderr.write("Check string alphabets:\n")
+
+alph_1 = list(set(''.join(str1)))
+alph_2 = list(set(''.join(str2)))
+
+if args.verbose > 2:
+    sys.stderr.write("  Alphabet string 1: ")
+    for i in alph_1:
+        sys.stderr.write(i+", ")
+    sys.stderr.write("\n")
+
+if args.verbose > 2:
+    sys.stderr.write("  Alphabet string 2: ")
+    for i in alph_2:
+        sys.stderr.write(i+", ")
+    sys.stderr.write("\n")
+
+for i in dict_alp:
+    if i in alph_1:
+        alph_1.remove(i)
+    if i in alph_2:
+        alph_2.remove(i)
+
+# split when there are wrong characters
+for i in alph_1:
+    str_temp = str1
+    for j in str_temp:
+        str1.remove(j)
+        for k in j.split(i):
+            str1.append(k)
+
+for i in alph_2:
+    str_temp = str2
+    for j in str_temp:
+        str2.remove(j)
+        for k in j.split(i):
+            str2.append(k)
+
+
+# ------------------------------------------------------------------------------
+# CREATE THE PROFILE
+# ------------------------------------------------------------------------------
+if args.verbose > 2:
+    sys.stderr.write("Compute the profile...")
+profile = dict()
+
+# add strings from 1
+for s in str1:
+    if len(s) < args.q:
+        break
+    qgram = s[0:args.q]
+    pos = qposition(qgram)
+
+    # add first q-gram
+    if pos in profile:
+        profile[pos][0] = profile[pos][0] + 1
+    else:
+        profile[pos] = [1,0]
+
+    # calculate next q-gram
+    fix_pow = myPow(alphSize,args.q-1)
+    for i in range(1,len(s)-args.q+1):
+        p1 = ull(pos-( ull(dict_num[s[i-1]]) * fix_pow))
+        pos= p1 * alphSize + ull(dict_num[s[i+args.q-1]])
+        # add q-gram
+        if pos in profile:
+            profile[pos][0] = profile[pos][0] + 1
+        else:
+            profile[pos] = [1,0]
+
+# add strings from 2
+for s in str2:
+    if len(s) < args.q:
+        break
+    qgram = s[0:args.q]
+    pos = qposition(qgram)
+
+    # add first q-gram
+    if pos in profile:
+        profile[pos][1] = profile[pos][1] + 1
+    else:
+        profile[pos] = [0,1]
+
+    # calculate next q-gram
+    fix_pow = myPow(alphSize,args.q-1)
+    for i in range(1,len(s)-args.q+1):
+        p1 = ull(pos-( ull(dict_num[s[i-1]]) * fix_pow))
+        pos= p1 * alphSize + ull(dict_num[s[i+args.q-1]])
+        # add q-gram
+        if pos in profile:
+            profile[pos][1] = profile[pos][1] + 1
+        else:
+            profile[pos] = [0,1]
+
+if args.verbose > 2:
+    sys.stderr.write("done\n")
+
+
+# ------------------------------------------------------------------------------
+# CALCULATE DISTANCE
+# ------------------------------------------------------------------------------
+if args.verbose > 2:
+    sys.stderr.write("Calculate distance...")
+distance = 0
+# cut if it surpass the treshold
+for i in profile:
+    a = profile[i][0]
+    b = profile[i][1]
+    if a > args.threshold:
+        a = args.threshold + 1
+    if b > args.threshold:
+        b = args.threshold + 1
+
+    if a != b:
+        distance = distance + 1
+
+if args.verbose > 2:
+    sys.stderr.write("done\n\n")
+
+# ------------------------------------------------------------------------------
+# PRINT OUTPUT
+# ------------------------------------------------------------------------------
+if args.verbose > 2:
+    sys.stderr.write("Number of unique q-grams: "+str(len(profile))+"\n")
+    duration = default_timer()-start
+    sys.stderr.write("Computation time: ")
+    sys.stderr.write("{0:.2f}".format(duration))
+    sys.stderr.write(" seconds\n\n")
+
+
+if args.verbose > 2:
+    sys.stderr.write("DISTANCE (in stdout):\n")
+
+sys.stdout.write(str(distance)+"\n")
+
+# success
+sys.exit(0)
