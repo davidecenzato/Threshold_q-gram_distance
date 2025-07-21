@@ -1,0 +1,4 @@
+set(DICTIONARY_SOURCES ef_compressed_dictionary.hpp)
+
+add_library(dictionary OBJECT ${DICTIONARY_SOURCES})
+target_link_libraries(dictionary sdsl divsufsort divsufsort64)

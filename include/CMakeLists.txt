@@ -1,0 +1,5 @@
+add_subdirectory(dictionary)
+target_include_directories(dictionary PUBLIC dictionary)
+
+add_subdirectory(profile)
+target_include_directories(profile PUBLIC profile)
