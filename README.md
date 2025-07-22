@@ -47,6 +47,17 @@ The resulting TSV-formatted matrices are saved in the `output_matrices` folder.
 * [sdsl-lite](https://github.com/simongog/sdsl-lite.git)
 * [robin-map](https://github.com/Tessil/robin-map)
 
+### Authors
+
+- [**Davide Cenzato**](https://github.com/davidecenzato)
+- **Giuditta Franco**
+- **Zsuzsanna Lipták**
+- [**Alessio Milanese**](https://github.com/AlessioMilanese)
+
+### Publication
+
+**Davide Cenzato**, **Giuditta Franco**, **Zsuzsanna Lipták**, **Alessio Milanese**. The threshold *q*-gram distance: a simple, efficient, and effective distance measure for genomic sequence comparison. *Submitted*, 2025.
+
 ### Contacts
 
-If you notice any bugs, please feel free to report them by opening a Git issue or by contacting us at davidecenzato Unive email.
+If you notice any bugs, please feel free to report them by opening a Git issue or by contacting us at davide[dot]cenzato[at]unive[dot]it.
